@@ -1,13 +1,14 @@
+import { AntDesign } from '@expo/vector-icons';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import * as React from 'react';
-import { Platform, StatusBar, Text, View } from 'react-native';
+import { Platform, StatusBar, View } from 'react-native';
 import { styled } from 'styled-components/native';
 
 import { Alarm } from '../shared/components/Alarm';
+import { ButtonSwitch } from '../shared/components/RoundButton';
 import Switch from '../shared/components/Switch/Switch';
-import { AlarmOffOptionEnum } from '../shared/entities/alarm';
-import { WeekdayEnum } from '../shared/entities/dates';
+import { SizeEnum } from '../shared/entities/size';
 import { COLORS } from '../styles/colors';
 import FONTS from '../styles/fonts';
 
@@ -43,6 +44,26 @@ const Alarms: React.FC = () => {
       }}
     >
       <Switch value={v} onValueChange={setV} />
+      <ButtonSwitch value={v} onChangeValue={setV} text="abc" />
+      <ButtonSwitch
+        value={v}
+        onChangeValue={setV}
+        text="abc"
+        size={SizeEnum.xxl}
+      />
+      <ButtonSwitch
+        value={v}
+        onChangeValue={setV}
+        Icon={AntDesign}
+        iconName="shake"
+      />
+      <ButtonSwitch
+        value={v}
+        onChangeValue={setV}
+        Icon={AntDesign}
+        iconName="shake"
+        size={SizeEnum.xxl}
+      />
     </View>
   );
 };
