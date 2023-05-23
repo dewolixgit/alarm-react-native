@@ -5,4 +5,6 @@ export const COLORS = {
   beige1: '#ffefe9',
   beige2: '#ffd7c7',
   beige3: '#ffa885',
+
+  transparentBlack25: 'rgba(0, 0, 0, 0.25)',
 };
