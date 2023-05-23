@@ -6,7 +6,8 @@ import { Platform, StatusBar, View } from 'react-native';
 import { styled } from 'styled-components/native';
 
 import { Alarm } from '../shared/components/Alarm';
-import { ButtonSwitch } from '../shared/components/RoundButton';
+import { Button } from '../shared/components/Button';
+import { ButtonSwitch } from '../shared/components/ButtonSwitch';
 import Switch from '../shared/components/Switch/Switch';
 import { SizeEnum } from '../shared/entities/size';
 import { COLORS } from '../styles/colors';
@@ -64,6 +65,7 @@ const Alarms: React.FC = () => {
         iconName="shake"
         size={SizeEnum.xxl}
       />
+      <Button title="asd" />
     </View>
   );
 };
