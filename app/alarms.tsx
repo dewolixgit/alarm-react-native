@@ -2,12 +2,13 @@ import { AntDesign } from '@expo/vector-icons';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import * as React from 'react';
-import { Platform, StatusBar, View } from 'react-native';
+import { Platform, StatusBar, TextInput, View } from 'react-native';
 import { styled } from 'styled-components/native';
 
 import { Alarm } from '../shared/components/Alarm';
 import { Button } from '../shared/components/Button';
 import { ButtonSwitch } from '../shared/components/ButtonSwitch';
+import Input from '../shared/components/Input/Input';
 import Switch from '../shared/components/Switch/Switch';
 import { SizeEnum } from '../shared/entities/size';
 import { COLORS } from '../styles/colors';
@@ -45,27 +46,40 @@ const Alarms: React.FC = () => {
       }}
     >
       <Switch value={v} onValueChange={setV} />
-      <ButtonSwitch value={v} onChangeValue={setV} text="abc" />
-      <ButtonSwitch
-        value={v}
-        onChangeValue={setV}
-        text="abc"
-        size={SizeEnum.xxl}
-      />
-      <ButtonSwitch
-        value={v}
-        onChangeValue={setV}
-        Icon={AntDesign}
-        iconName="shake"
-      />
-      <ButtonSwitch
-        value={v}
-        onChangeValue={setV}
-        Icon={AntDesign}
-        iconName="shake"
-        size={SizeEnum.xxl}
-      />
+      <View
+        style={{
+          flexDirection: 'row',
+          gap: 10,
+        }}
+      >
+        <ButtonSwitch value={v} onChangeValue={setV} text="abc" />
+        <ButtonSwitch
+          value={v}
+          onChangeValue={setV}
+          text="abc"
+          size={SizeEnum.xxl}
+        />
+        <ButtonSwitch
+          value={v}
+          onChangeValue={setV}
+          Icon={AntDesign}
+          iconName="shake"
+        />
+        <ButtonSwitch
+          value={v}
+          onChangeValue={setV}
+          Icon={AntDesign}
+          iconName="shake"
+          size={SizeEnum.xxl}
+        />
+      </View>
       <Button title="asd" />
+      <View
+        style={{
+          height: 10,
+        }}
+      />
+      <Input label="hello" />
     </View>
   );
 };
