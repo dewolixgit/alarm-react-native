@@ -79,7 +79,7 @@ const Alarms: React.FC = () => {
     >
       <Button onPress={showDatepicker} title="Show date picker!" />
       <Button onPress={showTimepicker} title="Show time picker!" />
-      <Text>selected: {date.toLocaleString()}</Text>
+      <Text>selected: {date?.toLocaleString()}</Text>
       <Switch value={v} onValueChange={setV} />
       <View
         style={{
