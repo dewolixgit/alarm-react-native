@@ -1,8 +1,12 @@
 import { AntDesign } from '@expo/vector-icons';
+import {
+  DateTimePickerAndroid,
+  DateTimePickerEvent,
+} from '@react-native-community/datetimepicker';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import * as React from 'react';
-import { Platform, StatusBar, TextInput, View } from 'react-native';
+import { Platform, StatusBar, TextInput, View, Text } from 'react-native';
 import { styled } from 'styled-components/native';
 
 import { Alarm } from '../shared/components/Alarm';
@@ -32,6 +36,34 @@ const Alarms: React.FC = () => {
     }
   }, [fontsLoaded]);
 
+  const [date, setDate] = React.useState<Date | null>(new Date(1598051730000));
+
+  const onChange = (
+    event: DateTimePickerEvent,
+    selectedDate: Date | undefined
+  ) => {
+    setDate(selectedDate ?? null);
+  };
+
+  const showMode = (currentMode: 'date' | 'time') => {
+    if (date) {
+      DateTimePickerAndroid.open({
+        value: date,
+        onChange,
+        mode: currentMode,
+        is24Hour: true,
+      });
+    }
+  };
+
+  const showDatepicker = () => {
+    showMode('date');
+  };
+
+  const showTimepicker = () => {
+    showMode('time');
+  };
+
   if (!fontsLoaded) {
     return null;
   }
@@ -45,6 +77,9 @@ const Alarms: React.FC = () => {
         paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
       }}
     >
+      <Button onPress={showDatepicker} title="Show date picker!" />
+      <Button onPress={showTimepicker} title="Show time picker!" />
+      <Text>selected: {date.toLocaleString()}</Text>
       <Switch value={v} onValueChange={setV} />
       <View
         style={{
