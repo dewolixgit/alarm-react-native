@@ -1,5 +1,6 @@
 import { styled } from 'styled-components/native';
 
+import { COLORS } from '../../../styles/colors';
 import { text } from '../../../styles/typography';
 import {
   RobotoFontWeightUnion,
@@ -10,7 +11,8 @@ const StyledText = styled.Text<{
   size?: TextSizeUnion;
   weight?: RobotoFontWeightUnion;
 }>`
-  ${text}
+  ${text};
+  color: ${COLORS.beige1};
 `;
 
 export default StyledText;
