@@ -15,6 +15,13 @@ import { ButtonSwitch } from '../shared/components/ButtonSwitch';
 import Input from '../shared/components/Input/Input';
 import Switch from '../shared/components/Switch/Switch';
 import { SizeEnum } from '../shared/entities/size';
+import {
+  scheduleAlarm,
+  enableAlarm,
+  stopAlarm,
+  getAllAlarms,
+  default as AlarmClass,
+} from '../shared/nativeModules/alarmModule';
 import { COLORS } from '../styles/colors';
 import FONTS from '../styles/fonts';
 
@@ -25,6 +32,7 @@ const StyledAlarm = styled(Alarm)`
 `;
 
 const Alarms: React.FC = () => {
+  const [myAlarm, setMyAlarm] = React.useState<AlarmClass | null>();
   const [v, setV] = React.useState(false);
 
   // Todo: Перенести в корневой компонент, определяющий рендерить главную страницу или экран выключения
@@ -63,6 +71,16 @@ const Alarms: React.FC = () => {
   const showTimepicker = () => {
     showMode('time');
   };
+
+  React.useEffect(() => {
+    getAllAlarms()
+      .then((d) => {
+        console.log(d);
+      })
+      .catch((e) => {
+        console.log('error', e);
+      });
+  }, []);
 
   if (!fontsLoaded) {
     return null;
@@ -108,7 +126,33 @@ const Alarms: React.FC = () => {
           size={SizeEnum.xxl}
         />
       </View>
-      <Button title="asd" />
+      <Button
+        title="create alarm"
+        onPress={() => {
+          const alarm = new AlarmClass({
+            hour: 9,
+            minutes: 3,
+          });
+
+          setMyAlarm(alarm);
+
+          scheduleAlarm(alarm);
+        }}
+      />
+      <Button
+        title="start alarm"
+        onPress={() => {
+          if (myAlarm?.uid) {
+            enableAlarm(myAlarm.uid);
+          }
+        }}
+      />
+      <Button
+        title="stop alarm"
+        onPress={() => {
+          stopAlarm();
+        }}
+      />
       <View
         style={{
           height: 10,
