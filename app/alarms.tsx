@@ -5,8 +5,10 @@ import {
 } from '@react-native-community/datetimepicker';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import { observer, useLocalObservable } from 'mobx-react-lite';
 import * as React from 'react';
-import { Platform, StatusBar, TextInput, View, Text } from 'react-native';
+import { Platform, StatusBar, Text, View } from 'react-native';
+import RNShake from 'react-native-shake';
 import { styled } from 'styled-components/native';
 
 import { Alarm } from '../shared/components/Alarm';
@@ -14,13 +16,17 @@ import { Button } from '../shared/components/Button';
 import { ButtonSwitch } from '../shared/components/ButtonSwitch';
 import Input from '../shared/components/Input/Input';
 import Switch from '../shared/components/Switch/Switch';
+import { Typography } from '../shared/components/typography';
 import { SizeEnum } from '../shared/entities/size';
+import { FontTypeEnum, FontWeightEnum } from '../shared/entities/typography';
+import { ContinuousShakingDetector } from '../shared/models/ContinuousShakingDetector';
+import { ValueModel } from '../shared/models/ValueModel';
 import {
-  scheduleAlarm,
-  enableAlarm,
-  stopAlarm,
-  getAllAlarms,
   default as AlarmClass,
+  enableAlarm,
+  getAllAlarms,
+  scheduleAlarm,
+  stopAlarm,
 } from '../shared/nativeModules/alarmModule';
 import { COLORS } from '../styles/colors';
 import FONTS from '../styles/fonts';
@@ -31,9 +37,26 @@ const StyledAlarm = styled(Alarm)`
   margin-bottom: 20px;
 `;
 
-const Alarms: React.FC = () => {
+const AlarmsView: React.FC = () => {
   const [myAlarm, setMyAlarm] = React.useState<AlarmClass | null>();
   const [v, setV] = React.useState(false);
+  const { value: inputValue, setValue: setInputValue } = useLocalObservable(
+    () => new ValueModel('')
+  );
+  const shakingDetector = useLocalObservable(() =>
+    ContinuousShakingDetector.createDefault({
+      onComplete: (detector) => {
+        detector.stopDetection();
+        console.log('complete');
+      },
+      onShake: () => {
+        console.log('shake');
+      },
+      onInterrupt: () => {
+        console.log('interrupt');
+      },
+    })
+  );
 
   // Todo: Перенести в корневой компонент, определяющий рендерить главную страницу или экран выключения
   const [fontsLoaded] = useFonts(FONTS);
@@ -80,6 +103,11 @@ const Alarms: React.FC = () => {
       .catch((e) => {
         console.log('error', e);
       });
+  }, []);
+
+  React.useEffect(() => {
+    shakingDetector.startDetection();
+    console.log('start detection');
   }, []);
 
   if (!fontsLoaded) {
@@ -158,9 +186,22 @@ const Alarms: React.FC = () => {
           height: 10,
         }}
       />
-      <Input label="hello" />
+      <Input label="hello" value={inputValue} onChangeText={setInputValue} />
+      <Typography
+        kind={FontTypeEnum.heading}
+        size={SizeEnum.l}
+        weight={FontWeightEnum.semibold}
+      >
+        {shakingDetector.isCompleted
+          ? 'Молодец'
+          : shakingDetector.isShaking
+          ? 'Тряси ещё'
+          : 'Тряси'}
+      </Typography>
     </View>
   );
 };
 
-export default Alarms;
+const ObserverAlarmsView = observer(AlarmsView);
+
+export default () => <ObserverAlarmsView />;
