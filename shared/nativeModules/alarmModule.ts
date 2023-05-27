@@ -2,6 +2,8 @@ import { NativeModules } from 'react-native';
 import 'react-native-get-random-values';
 import * as uuid from 'uuid';
 
+import { AlarmOffOptionEnum } from '../entities/alarm';
+
 const AlarmService = NativeModules.AlarmModule;
 
 export async function scheduleAlarm(alarm: Alarm) {
@@ -62,6 +64,7 @@ export default class Alarm {
   enabled: boolean;
   title: string;
   description: string;
+  offOption: AlarmOffOptionEnum;
   hour: number;
   minutes: number;
   snoozeInterval: number;
@@ -75,6 +78,7 @@ export default class Alarm {
       enabled?: boolean;
       title?: string;
       description?: string;
+      offOption?: AlarmOffOptionEnum;
       hour?: number;
       minutes?: number;
       snoozeInterval?: number;
@@ -87,6 +91,7 @@ export default class Alarm {
     this.enabled = params.enabled ?? true;
     this.title = params.title ?? 'Alarm';
     this.description = params.description ?? 'Wake up';
+    this.offOption = params.offOption ?? AlarmOffOptionEnum.gesture;
     this.hour = params.hour ?? new Date().getHours();
     this.minutes = params.minutes ?? new Date().getMinutes() + 1;
     this.snoozeInterval = params.snoozeInterval ?? 1;
@@ -111,6 +116,7 @@ export default class Alarm {
     enabled: boolean;
     title: string;
     description: string;
+    offOption: AlarmOffOptionEnum;
     hour: number;
     minutes: number;
     snoozeInterval: number;
@@ -123,6 +129,7 @@ export default class Alarm {
       enabled: this.enabled,
       title: this.title,
       description: this.description,
+      offOption: this.offOption,
       hour: this.hour,
       minutes: this.minutes,
       snoozeInterval: this.snoozeInterval,
@@ -137,6 +144,7 @@ export default class Alarm {
     enabled: boolean;
     title: string;
     description: string;
+    offOption: AlarmOffOptionEnum;
     hour: number;
     minutes: number;
     snoozeInterval: number;
