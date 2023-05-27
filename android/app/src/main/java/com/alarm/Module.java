@@ -117,6 +117,7 @@ public class Module extends ReactContextBaseJavaModule {
         String uid = alarm.getString("uid");
         String title = alarm.getString("title");
         String description = alarm.getString("description");
+        String offOption = alarm.getString("offOption");
         int hour = alarm.getInt("hour");
         int minutes = alarm.getInt("minutes");
         int snoozeInterval = alarm.getInt("snoozeInterval");
@@ -129,7 +130,7 @@ public class Module extends ReactContextBaseJavaModule {
                 days.add(rawDays.getInt(i));
             }
         }
-        return new Alarm(uid, days, hour, minutes, snoozeInterval, title, description, repeating, active);
+        return new Alarm(uid, days, hour, minutes, snoozeInterval, title, description, offOption, repeating, active);
     }
 
     private WritableMap serializeAlarmObject (Alarm alarm) {
@@ -137,6 +138,7 @@ public class Module extends ReactContextBaseJavaModule {
         map.putString("uid", alarm.uid);
         map.putString("title", alarm.title);
         map.putString("description", alarm.description);
+        map.putString("offOption", alarm.offOption);
         map.putInt("hour", alarm.hour);
         map.putInt("minutes", alarm.minutes);
         map.putInt("snoozeInterval", alarm.snoozeInterval);

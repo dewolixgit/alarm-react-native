@@ -25,6 +25,7 @@ import {
   default as AlarmClass,
   enableAlarm,
   getAllAlarms,
+  removeAllAlarms,
   scheduleAlarm,
   stopAlarm,
 } from '../shared/nativeModules/alarmModule';
@@ -158,8 +159,8 @@ const AlarmsView: React.FC = () => {
         title="create alarm"
         onPress={() => {
           const alarm = new AlarmClass({
-            hour: 9,
-            minutes: 3,
+            hour: 19,
+            minutes: 9,
           });
 
           setMyAlarm(alarm);
