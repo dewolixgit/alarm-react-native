@@ -20,6 +20,7 @@ import { Typography } from '../shared/components/typography';
 import { SizeEnum } from '../shared/entities/size';
 import { FontTypeEnum, FontWeightEnum } from '../shared/entities/typography';
 import { ContinuousShakingDetector } from '../shared/models/ContinuousShakingDetector';
+import { SumTaskModel } from '../shared/models/SumTaskModel';
 import { ValueModel } from '../shared/models/ValueModel';
 import {
   default as AlarmClass,
@@ -44,6 +45,8 @@ const AlarmsView: React.FC = () => {
   const { value: inputValue, setValue: setInputValue } = useLocalObservable(
     () => new ValueModel('')
   );
+  const mathTask = useLocalObservable(SumTaskModel.createDefault);
+
   const shakingDetector = useLocalObservable(() =>
     ContinuousShakingDetector.createDefault({
       onComplete: (detector) => {
@@ -187,7 +190,6 @@ const AlarmsView: React.FC = () => {
           height: 10,
         }}
       />
-      <Input label="hello" value={inputValue} onChangeText={setInputValue} />
       <Typography
         kind={FontTypeEnum.heading}
         size={SizeEnum.l}
@@ -198,6 +200,27 @@ const AlarmsView: React.FC = () => {
           : shakingDetector.isShaking
           ? 'Тряси ещё'
           : 'Тряси'}
+      </Typography>
+      <Button title="init math task" onPress={mathTask.initTask} />
+      <Typography
+        kind={FontTypeEnum.heading}
+        size={SizeEnum.l}
+        weight={FontWeightEnum.semibold}
+      >
+        {mathTask.terms.value ? mathTask.terms.value?.join(' + ') : ''}
+      </Typography>
+      <Input
+        label="answer"
+        value={inputValue}
+        onChangeText={setInputValue}
+        keyboardType="numeric"
+      />
+      <Typography
+        kind={FontTypeEnum.heading}
+        size={SizeEnum.l}
+        weight={FontWeightEnum.semibold}
+      >
+        {Number(inputValue) === mathTask.answer ? 'Правильно' : 'Неправильно'}
       </Typography>
     </View>
   );
