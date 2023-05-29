@@ -1,66 +1,138 @@
-import { AntDesign, MaterialIcons } from '@expo/vector-icons';
-import {
-  DateTimePickerAndroid,
-  DateTimePickerEvent,
-} from '@react-native-community/datetimepicker';
 import { useFonts } from 'expo-font';
-import { Stack, Tabs } from 'expo-router';
+import { Tabs, useFocusEffect, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { observer, useLocalObservable } from 'mobx-react-lite';
 import * as React from 'react';
-import { Platform, StatusBar, Text, View } from 'react-native';
-import { Screen } from 'react-native-screens';
-import RNShake from 'react-native-shake';
-import { styled } from 'styled-components/native';
+import { FlatList } from 'react-native';
 
-import { Alarm } from '../../shared/components/Alarm';
-import { Button } from '../../shared/components/Button';
-import { ButtonSwitch } from '../../shared/components/ButtonSwitch';
-import Input from '../../shared/components/Input/Input';
-import Switch from '../../shared/components/Switch/Switch';
-import { Typography } from '../../shared/components/typography';
-import { SizeEnum } from '../../shared/entities/size';
-import { FontTypeEnum, FontWeightEnum } from '../../shared/entities/typography';
-import { ContinuousShakingDetector } from '../../shared/models/ContinuousShakingDetector';
-import { SumTaskModel } from '../../shared/models/SumTaskModel';
-import { ValueModel } from '../../shared/models/ValueModel';
+import { CenterScreenMessage } from '../../shared/components/CenterScreenMessage';
+import ContentContainer from '../../shared/components/ContentContainer';
+import { FullContainerLoader } from '../../shared/components/ui';
+import { AlarmOffOptionEnum } from '../../shared/entities/alarm';
+import { ScheduleScreenParamsType } from '../../shared/entities/screens/schedule';
 import {
   default as AlarmClass,
-  enableAlarm,
+  disableAlarm,
   getAllAlarms,
   removeAllAlarms,
   scheduleAlarm,
   stopAlarm,
-} from '../../shared/nativeModules/alarmModule';
-import { COLORS } from '../../styles/colors';
+} from '../../shared/nativeModules/alarmModule/alarmModule';
+import { AlarmsScreenStore } from '../../store/local/AlarmsScreenStore';
 import FONTS from '../../styles/fonts';
+import disabledAlarms from '../disabledAlarms';
+import { LogoutIcon } from '../disabledAlarms/disabledAlarms.styles';
+
+import { AddAlarmIcon, Container, StyledList } from './alarms.styles';
+import { AlarmListItem } from './components';
+
+const MOCK_ALARMS: AlarmClass[] = [
+  new AlarmClass({
+    uid: '1',
+    offOption: AlarmOffOptionEnum.math,
+    days: [5, 2, 6],
+    hour: 5,
+    minutes: 53,
+  }),
+  new AlarmClass({
+    uid: '2',
+    offOption: AlarmOffOptionEnum.gesture,
+    days: [1, 2, 3],
+    hour: 2,
+    minutes: 3,
+  }),
+  new AlarmClass({
+    uid: '3',
+    offOption: AlarmOffOptionEnum.shake,
+    days: [2, 5, 6],
+    hour: 8,
+    minutes: 12,
+  }),
+  new AlarmClass({
+    uid: '4',
+    offOption: AlarmOffOptionEnum.math,
+    days: [4, 6],
+    hour: 16,
+    minutes: 15,
+  }),
+  new AlarmClass({
+    uid: '5',
+    offOption: AlarmOffOptionEnum.shake,
+    days: [6, 5, 4, 3, 2, 1, 0],
+    hour: 5,
+    minutes: 53,
+  }),
+  new AlarmClass({
+    uid: '6',
+    offOption: AlarmOffOptionEnum.math,
+    days: [5, 2, 6],
+    hour: 5,
+    minutes: 53,
+  }),
+  new AlarmClass({
+    uid: '7',
+    offOption: AlarmOffOptionEnum.math,
+    days: [5, 2, 6],
+    hour: 5,
+    minutes: 53,
+  }),
+  new AlarmClass({
+    uid: '8',
+    offOption: AlarmOffOptionEnum.math,
+    days: [5, 2, 6],
+    hour: 5,
+    minutes: 53,
+  }),
+  new AlarmClass({
+    uid: '9',
+    offOption: AlarmOffOptionEnum.math,
+    days: [5, 2, 6],
+    hour: 5,
+    minutes: 53,
+  }),
+  new AlarmClass({
+    uid: '10',
+    offOption: AlarmOffOptionEnum.math,
+    days: [5, 2, 6],
+    hour: 5,
+    minutes: 53,
+  }),
+  new AlarmClass({
+    uid: '11',
+    offOption: AlarmOffOptionEnum.math,
+    days: [5, 2, 6],
+    hour: 5,
+    minutes: 53,
+  }),
+  new AlarmClass({
+    uid: '12',
+    offOption: AlarmOffOptionEnum.math,
+    days: [5, 2, 6],
+    hour: 5,
+    minutes: 53,
+  }),
+  new AlarmClass({
+    uid: '13',
+    offOption: AlarmOffOptionEnum.math,
+    days: [5, 2, 6],
+    hour: 5,
+    minutes: 53,
+  }),
+  new AlarmClass({
+    uid: '14',
+    offOption: AlarmOffOptionEnum.math,
+    days: [5, 2, 6],
+    hour: 5,
+    minutes: 53,
+  }),
+];
 
 SplashScreen.preventAutoHideAsync();
 
-export const Alarms: React.FC = () => {
-  const [myAlarm, setMyAlarm] = React.useState<AlarmClass | null>();
-  const [v, setV] = React.useState(false);
-  const { value: inputValue, setValue: setInputValue } = useLocalObservable(
-    () => new ValueModel('')
-  );
-  const mathTask = useLocalObservable(SumTaskModel.createDefault);
+export const Alarms: React.FC = observer(() => {
+  const { push } = useRouter();
+  const alarmsScreenStore = useLocalObservable(() => new AlarmsScreenStore());
 
-  const shakingDetector = useLocalObservable(() =>
-    ContinuousShakingDetector.createDefault({
-      onComplete: (detector) => {
-        detector.stopDetection();
-        console.log('complete');
-      },
-      onShake: () => {
-        console.log('shake');
-      },
-      onInterrupt: () => {
-        console.log('interrupt');
-      },
-    })
-  );
-
-  // Todo: Перенести в корневой компонент, определяющий рендерить главную страницу или экран выключения
   const [fontsLoaded] = useFonts(FONTS);
 
   const onLayoutRootView = React.useCallback(async () => {
@@ -69,48 +141,24 @@ export const Alarms: React.FC = () => {
     }
   }, [fontsLoaded]);
 
-  const [date, setDate] = React.useState<Date | null>(new Date(1598051730000));
-
-  const onChange = (
-    event: DateTimePickerEvent,
-    selectedDate: Date | undefined
-  ) => {
-    setDate(selectedDate ?? null);
-  };
-
-  const showMode = (currentMode: 'date' | 'time') => {
-    if (date) {
-      DateTimePickerAndroid.open({
-        value: date,
-        onChange,
-        mode: currentMode,
-        is24Hour: true,
-      });
-    }
-  };
-
-  const showDatepicker = () => {
-    showMode('date');
-  };
-
-  const showTimepicker = () => {
-    showMode('time');
-  };
-
-  React.useEffect(() => {
-    getAllAlarms()
-      .then((d) => {
-        console.log(d);
-      })
-      .catch((e) => {
-        console.log('error', e);
-      });
+  const onPressAddAlarm = React.useCallback(() => {
+    push({
+      pathname: 'schedule',
+      params: {
+        alarmUID: '',
+      } as ScheduleScreenParamsType,
+    });
   }, []);
 
-  React.useEffect(() => {
-    shakingDetector.startDetection();
-    console.log('start detection');
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      alarmsScreenStore.init();
+
+      return () => {
+        alarmsScreenStore.reset();
+      };
+    }, [])
+  );
 
   if (!fontsLoaded) {
     return null;
@@ -118,110 +166,29 @@ export const Alarms: React.FC = () => {
 
   return (
     <>
-      <View
-        onLayout={onLayoutRootView}
-        style={{
-          backgroundColor: COLORS.darkBronze1,
-          flex: 1,
-          paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+      <Tabs.Screen
+        options={{
+          headerRight: () => <AddAlarmIcon onPress={onPressAddAlarm} />,
         }}
-      >
-        <Button onPress={showDatepicker} title="Show date picker!" />
-        <Button onPress={showTimepicker} title="Show time picker!" />
-        <Text>selected: {date?.toLocaleString()}</Text>
-        <Switch value={v} onValueChange={setV} />
-        <View
-          style={{
-            flexDirection: 'row',
-            gap: 10,
-          }}
-        >
-          <ButtonSwitch value={v} onChangeValue={setV} text="abc" />
-          <ButtonSwitch
-            value={v}
-            onChangeValue={setV}
-            text="abc"
-            size={SizeEnum.xxl}
-          />
-          <ButtonSwitch
-            value={v}
-            onChangeValue={setV}
-            Icon={AntDesign}
-            iconName="shake"
-          />
-          <ButtonSwitch
-            value={v}
-            onChangeValue={setV}
-            Icon={AntDesign}
-            iconName="shake"
-            size={SizeEnum.xxl}
-          />
-        </View>
-        <Button
-          title="create alarm"
-          onPress={() => {
-            const alarm = new AlarmClass({
-              hour: 19,
-              minutes: 9,
-            });
+      />
+      <Container onLayout={onLayoutRootView}>
+        {/*{isLoading && <FullContainerLoader />}*/}
 
-            setMyAlarm(alarm);
+        {alarmsScreenStore.alarms.value.length === 0 && (
+          <CenterScreenMessage>
+            У вас пока нет сохранённых будильников
+          </CenterScreenMessage>
+        )}
 
-            scheduleAlarm(alarm);
-          }}
-        />
-        <Button
-          title="start alarm"
-          onPress={() => {
-            if (myAlarm?.uid) {
-              enableAlarm(myAlarm.uid);
-            }
-          }}
-        />
-        <Button
-          title="stop alarm"
-          onPress={() => {
-            stopAlarm();
-          }}
-        />
-        <View
-          style={{
-            height: 10,
-          }}
-        />
-        <Typography
-          kind={FontTypeEnum.heading}
-          size={SizeEnum.l}
-          weight={FontWeightEnum.semibold}
-        >
-          {shakingDetector.isCompleted
-            ? 'Молодец'
-            : shakingDetector.isShaking
-            ? 'Тряси ещё'
-            : 'Тряси'}
-        </Typography>
-        <Button title="init math task" onPress={mathTask.initTask} />
-        <Typography
-          kind={FontTypeEnum.heading}
-          size={SizeEnum.l}
-          weight={FontWeightEnum.semibold}
-        >
-          {mathTask.terms.value ? mathTask.terms.value?.join(' + ') : ''}
-        </Typography>
-        <Input
-          label="answer"
-          value={inputValue}
-          onChangeText={setInputValue}
-          keyboardType="numeric"
-        />
-        <Typography
-          kind={FontTypeEnum.heading}
-          size={SizeEnum.l}
-          weight={FontWeightEnum.semibold}
-        >
-          {Number(inputValue) === mathTask.answer ? 'Правильно' : 'Неправильно'}
-        </Typography>
-      </View>
+        {alarmsScreenStore.alarms.value.length > 0 && (
+          <StyledList
+            data={alarmsScreenStore.alarms.value}
+            renderItem={({ item }) => (
+              <AlarmListItem key={item.uid} alarm={item} />
+            )}
+          />
+        )}
+      </Container>
     </>
   );
-};
+});

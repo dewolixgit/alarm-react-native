@@ -1,9 +1,14 @@
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as React from 'react';
-import { ViewProps } from 'react-native';
+import { TouchableOpacity, ViewProps } from 'react-native';
 
 import { COLORS } from '../../../styles/colors';
 import { blockShadow1 } from '../../../styles/mixins';
-import { AlarmOffOptionEnum, alarmOffOptionIcons } from '../../entities/alarm';
+import {
+  AlarmOffOptionEnum,
+  alarmOffOptionIcons,
+  alarmOffOptionTextMap,
+} from '../../entities/alarm';
 import { alarmCardOffOptionsIconSizes } from '../../entities/components/Alarm';
 import {
   isEveryWeekDay,
@@ -11,13 +16,24 @@ import {
   sortWeekdaysFromMonday,
   WeekdayEnum,
 } from '../../entities/dates';
+import { Switch } from '../Switch';
 
-import { AccentContainer, Card, Content, Info, Time } from './Alarm.styles';
+import {
+  AccentContainer,
+  Card,
+  Content,
+  Controls,
+  Info,
+  Time,
+} from './Alarm.styles';
 
 type Props = ViewProps & {
   offOption: AlarmOffOptionEnum;
   time: string;
   repeatWeekDays: WeekdayEnum[];
+  onPressEdit?: VoidFunction;
+  switchValue?: boolean;
+  onChangeSwitchValue?: (value: boolean) => void;
 };
 
 const Alarm: React.FC<Props> = ({
@@ -25,6 +41,9 @@ const Alarm: React.FC<Props> = ({
   time,
   offOption,
   repeatWeekDays,
+  onPressEdit,
+  switchValue,
+  onChangeSwitchValue,
   ...props
 }) => {
   const { IconComponent, iconName } = alarmOffOptionIcons[offOption];
@@ -35,7 +54,9 @@ const Alarm: React.FC<Props> = ({
         <AccentContainer>
           <Time>{time}</Time>
         </AccentContainer>
-        {isEveryWeekDay(repeatWeekDays) ? (
+        {repeatWeekDays.length === 0 ? (
+          <Info>Без повторов</Info>
+        ) : isEveryWeekDay(repeatWeekDays) ? (
           <Info>Повторяется{'\n'}каждый день</Info>
         ) : (
           <Info>
@@ -54,8 +75,22 @@ const Alarm: React.FC<Props> = ({
             color={COLORS.beige1}
           />
         </AccentContainer>
-        <Info>Выключается жестом</Info>
+        <Info>{alarmOffOptionTextMap[offOption]}</Info>
       </Content>
+      <Controls>
+        <TouchableOpacity onPress={onPressEdit}>
+          <MaterialCommunityIcons
+            name="circle-edit-outline"
+            size={38}
+            color={COLORS.beige1}
+          />
+        </TouchableOpacity>
+        <Switch
+          theme="darker"
+          value={switchValue}
+          onValueChange={onChangeSwitchValue}
+        />
+      </Controls>
     </Card>
   );
 };

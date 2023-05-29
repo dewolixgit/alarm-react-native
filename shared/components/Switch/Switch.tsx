@@ -4,15 +4,19 @@ import { SwitchProps } from 'react-native/Libraries/Components/Switch/Switch';
 
 import { COLORS } from '../../../styles/colors';
 
-const Switch: React.FC<SwitchProps> = (props) => {
+type Props = SwitchProps & {
+  theme?: 'dark' | 'darker';
+};
+
+const Switch: React.FC<Props> = ({ theme = 'dark', ...switchProps }) => {
   return (
     <ReactNativeSwitch
       trackColor={{
-        false: COLORS.darkBronze2,
+        false: theme === 'dark' ? COLORS.darkBronze2 : COLORS.darkBronze1,
         true: COLORS.beige2,
       }}
       thumbColor={COLORS.white}
-      {...props}
+      {...switchProps}
     />
   );
 };

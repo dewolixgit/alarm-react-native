@@ -12,6 +12,7 @@ import { SizeEnum } from '../../entities/size';
 export const Container = styled.View<{
   size?: ButtonSwitchSizesUnion;
   active?: boolean;
+  disabled?: boolean;
 }>`
   ${({ size = SizeEnum.m }) => css`
     ${square(`${buttonSwitchSizes[size]}px`)}
@@ -23,6 +24,8 @@ export const Container = styled.View<{
 
   color: ${({ active = false }) =>
     active ? COLORS.darkBronze2 : COLORS.beige1};
+
+  opacity: ${({ disabled = false }) => (disabled ? 0.5 : 1)};
 `;
 
 export const StyledText = styled.Text<{

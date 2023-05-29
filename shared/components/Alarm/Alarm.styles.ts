@@ -14,7 +14,7 @@ export const Card = styled.View`
 `;
 
 export const Content = styled.View`
-  flex: 1 1 0;
+  flex: 2 1 0;
 `;
 
 export const Time = styled(Heading).attrs({ size: SizeEnum.l })`
@@ -28,4 +28,10 @@ export const Info = styled(StyledText).attrs({ size: SizeEnum.s })`
 export const AccentContainer = styled.View`
   height: 32px;
   margin-bottom: 10px;
+`;
+
+export const Controls = styled.View`
+  flex: 1 1 0;
+  justify-content: space-between;
+  align-items: center;
 `;

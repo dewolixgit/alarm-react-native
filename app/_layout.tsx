@@ -5,21 +5,6 @@ import * as React from 'react';
 import { COLORS } from '../styles/colors';
 
 const Layout = () => {
-  // return (
-  //   <Stack
-  //     screenOptions={{
-  //       headerTitleAlign: 'center',
-  //       headerStyle: {
-  //         backgroundColor: COLORS.darkBronze2,
-  //       },
-  //       headerTintColor: COLORS.beige1,
-  //       headerTitleStyle: {
-  //         fontFamily: 'NunitoSemibold',
-  //       },
-  //     }}
-  //   />
-  // );
-
   return (
     <Tabs
       screenOptions={{
@@ -33,9 +18,9 @@ const Layout = () => {
         },
         tabBarActiveBackgroundColor: COLORS.darkBronze2,
         tabBarInactiveBackgroundColor: COLORS.darkBronze2,
-        tabBarActiveTintColor: COLORS.beige1,
+        tabBarActiveTintColor: COLORS.beige3,
         tabBarStyle: {
-          borderTopWidth: 0,
+          borderTopColor: COLORS.beige1,
           elevation: 5,
           backgroundColor: COLORS.darkBronze2,
           paddingBottom: 5,
@@ -43,7 +28,7 @@ const Layout = () => {
       }}
     >
       <Tabs.Screen
-        name="schedule"
+        name="schedule/index"
         options={{
           href: null,
         }}

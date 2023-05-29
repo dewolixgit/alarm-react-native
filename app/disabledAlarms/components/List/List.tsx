@@ -1,17 +1,14 @@
 import * as React from 'react';
 import { ActivityIndicator, FlatList } from 'react-native';
 
+import { CenterScreenMessage } from '../../../../shared/components/CenterScreenMessage';
 import ContentContainer from '../../../../shared/components/ContentContainer';
 import { Heading } from '../../../../shared/components/typography';
+import { FullContainerLoader } from '../../../../shared/components/ui';
 import { AlarmOffOptionEnum } from '../../../../shared/entities/alarm';
 import { COLORS } from '../../../../styles/colors';
 
-import {
-  EmptyMessage,
-  EmptyMessageContainer,
-  Loader,
-  StyledList,
-} from './List.styles';
+import { EmptyMessage, EmptyMessageContainer, StyledList } from './List.styles';
 import { ListItem } from './components';
 import { DisabledAlarmType } from './types';
 
@@ -98,16 +95,14 @@ export const List: React.FC = () => {
   const loading = false;
 
   if (loading) {
-    return <Loader />;
+    return <FullContainerLoader />;
   }
 
   if (disabledAlarms.length === 0) {
     return (
-      <EmptyMessageContainer>
-        <EmptyMessage>
-          Пока нет сохранённых выключенных будильников
-        </EmptyMessage>
-      </EmptyMessageContainer>
+      <CenterScreenMessage>
+        Пока нет сохранённых выключенных будильников
+      </CenterScreenMessage>
     );
   }
 

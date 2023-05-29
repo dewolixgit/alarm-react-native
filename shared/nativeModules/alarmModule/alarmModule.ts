@@ -2,7 +2,21 @@ import { NativeModules } from 'react-native';
 import 'react-native-get-random-values';
 import * as uuid from 'uuid';
 
-import { AlarmOffOptionEnum } from '../entities/alarm';
+import { AlarmOffOptionEnum } from '../../entities/alarm';
+
+export type AlarmClassParams = {
+  uid?: string;
+  enabled?: boolean;
+  title?: string;
+  description?: string;
+  offOption?: AlarmOffOptionEnum;
+  hour?: number;
+  minutes?: number;
+  snoozeInterval?: number;
+  repeating?: boolean;
+  active?: boolean;
+  days?: number[];
+};
 
 const AlarmService = NativeModules.AlarmModule;
 
@@ -11,7 +25,6 @@ export async function scheduleAlarm(alarm: Alarm) {
     alarm = new Alarm(alarm);
   }
   await AlarmService.set(alarm.toAndroid());
-  console.log('scheduling alarm: ', JSON.stringify(alarm));
 }
 
 export async function enableAlarm(uid: string) {
@@ -72,21 +85,7 @@ export default class Alarm {
   active: boolean;
   days: number[];
 
-  constructor(
-    params: {
-      uid?: string;
-      enabled?: boolean;
-      title?: string;
-      description?: string;
-      offOption?: AlarmOffOptionEnum;
-      hour?: number;
-      minutes?: number;
-      snoozeInterval?: number;
-      repeating?: boolean;
-      active?: boolean;
-      days?: number[];
-    } = {}
-  ) {
+  constructor(params: AlarmClassParams = {}) {
     this.uid = params.uid ?? uuid.v4();
     this.enabled = params.enabled ?? true;
     this.title = params.title ?? 'Alarm';
@@ -168,12 +167,18 @@ export default class Alarm {
     timeDate.setHours(this.hour);
     return timeDate;
   }
+
+  getTimeStringColonFormat() {
+    const time = this.getTimeString();
+
+    return `${time.hour}:${time.minutes}`;
+  }
 }
 
 export function toAndroidDays(daysArray: number[]) {
-  return daysArray.map((day) => (day + 1) % 7);
+  return daysArray.map((day) => day + 1);
 }
 
 export function fromAndroidDays(daysArray: number[]) {
-  return daysArray.map((d) => (d === 0 ? 6 : d - 1));
+  return daysArray.map((d) => d - 1);
 }

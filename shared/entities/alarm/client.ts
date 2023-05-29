@@ -28,3 +28,15 @@ export const alarmOffOptionIcons: Record<
     iconName: 'shake',
   },
 };
+
+export const alarmOffOptionTextMap: Record<AlarmOffOptionEnum, string> = {
+  [AlarmOffOptionEnum.math]: 'Выключается вычислением',
+  [AlarmOffOptionEnum.gesture]: 'Выключается жестом',
+  [AlarmOffOptionEnum.shake]: 'Выключается тряской устройства',
+};
+
+export const alarmOffOptionShortTextMap: Record<AlarmOffOptionEnum, string> = {
+  [AlarmOffOptionEnum.math]: 'Математика',
+  [AlarmOffOptionEnum.gesture]: 'Жест',
+  [AlarmOffOptionEnum.shake]: 'Встряхивание',
+};
