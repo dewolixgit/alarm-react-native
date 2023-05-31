@@ -7,6 +7,8 @@ import {
 import Alarm from '../../nativeModules/alarmModule';
 import { ValueModel } from '../ValueModel';
 
+import { prepareDayByTime } from './utils';
+
 type AlarmClassEditModelParamsType = {
   hours: number;
   minutes: number;
@@ -38,7 +40,12 @@ export class AlarmClassEditModel {
       repeating: this.toRepeat.value,
       days: this.toRepeat.value
         ? this.repeatDays.value.map(enumWeekDayToJSNumber)
-        : [],
+        : [
+            prepareDayByTime({
+              hours: this.hours.value,
+              minutes: this.minutes.value,
+            }),
+          ],
       offOption: this.offOption.value,
     });
   };

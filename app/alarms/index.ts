@@ -1,1 +1,3 @@
-export * from './alarms';
+import { Alarms } from './alarms';
+
+export default Alarms;

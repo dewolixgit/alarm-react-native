@@ -43,7 +43,7 @@ export const Schedule: React.FC = observer(() => {
 
     if (result) {
       push({
-        pathname: 'index',
+        pathname: 'alarms',
       });
     }
   }, [scheduleScreenStore]);
@@ -55,7 +55,7 @@ export const Schedule: React.FC = observer(() => {
 
     await removeAlarm(alarmUID);
     push({
-      pathname: 'index',
+      pathname: 'alarms',
     });
   }, [alarmUID]);
 

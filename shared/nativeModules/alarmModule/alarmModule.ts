@@ -68,7 +68,7 @@ export async function getAlarm(uid: string) {
   return Alarm.fromAndroid(alarm);
 }
 
-export async function getAlarmState() {
+export async function getAlarmState(): Promise<string> {
   return AlarmService.getState();
 }
 

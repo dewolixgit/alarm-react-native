@@ -60,6 +60,7 @@ export const AlarmListItem: React.FC<Props> = React.memo(({ alarm }) => {
     <AlarmItem
       time={formattedTime}
       offOption={alarm.offOption}
+      repeating={alarm.repeating}
       repeatWeekDays={preparedWeekDays}
       onPressEdit={onPressEdit}
       switchValue={localActiveState}

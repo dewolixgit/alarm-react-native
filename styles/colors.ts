@@ -8,5 +8,7 @@ export const COLORS = {
   beige2: '#ffd7c7',
   beige3: '#ffa885',
 
+  red: '#c21807',
+
   transparentBlack25: 'rgba(0, 0, 0, 0.25)',
 };

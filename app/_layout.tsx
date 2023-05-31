@@ -34,13 +34,20 @@ const Layout = () => {
         }}
       />
       <Tabs.Screen
-        name="ring"
+        name="ring/index"
         options={{
+          title: 'Будильник',
           href: null,
         }}
       />
       <Tabs.Screen
         name="index"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="alarms/index"
         options={{
           title: 'Будильники',
           tabBarIcon: ({ focused }) => (

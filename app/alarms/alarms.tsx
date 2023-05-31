@@ -9,19 +9,26 @@ import { CenterScreenMessage } from '../../shared/components/CenterScreenMessage
 import ContentContainer from '../../shared/components/ContentContainer';
 import { FullContainerLoader } from '../../shared/components/ui';
 import { AlarmOffOptionEnum } from '../../shared/entities/alarm';
+import { RingScreenRouteParamsType } from '../../shared/entities/screens/ring';
 import { ScheduleScreenParamsType } from '../../shared/entities/screens/schedule';
-import {
+import Alarm, {
   default as AlarmClass,
   disableAlarm,
+  getAlarmState,
   getAllAlarms,
   removeAllAlarms,
   scheduleAlarm,
   stopAlarm,
 } from '../../shared/nativeModules/alarmModule/alarmModule';
+import { checkActiveAlarmStore } from '../../store/global/CheckActiveAlarmStore';
+import { uiStore } from '../../store/global/UIStore/UIStore';
 import { AlarmsScreenStore } from '../../store/local/AlarmsScreenStore';
 import FONTS from '../../styles/fonts';
 import disabledAlarms from '../disabledAlarms';
 import { LogoutIcon } from '../disabledAlarms/disabledAlarms.styles';
+import { BaseDisabler } from '../ring/components/BaseDisabler';
+import { MathTask } from '../ring/components/MathTask';
+import { ShakeTask } from '../ring/components/ShakeTask';
 
 import { AddAlarmIcon, Container, StyledList } from './alarms.styles';
 import { AlarmListItem } from './components';
@@ -133,13 +140,11 @@ export const Alarms: React.FC = observer(() => {
   const { push } = useRouter();
   const alarmsScreenStore = useLocalObservable(() => new AlarmsScreenStore());
 
-  const [fontsLoaded] = useFonts(FONTS);
-
   const onLayoutRootView = React.useCallback(async () => {
-    if (fontsLoaded) {
+    if (uiStore.isFontsLoaded.value) {
       await SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+  }, [uiStore.isFontsLoaded.value]);
 
   const onPressAddAlarm = React.useCallback(() => {
     push({
@@ -152,7 +157,32 @@ export const Alarms: React.FC = observer(() => {
 
   useFocusEffect(
     React.useCallback(() => {
-      alarmsScreenStore.init();
+      const onFocusScreen = async () => {
+        await uiStore.loadFonts();
+
+        const activeAlarmUID = await getAlarmState();
+
+        if (activeAlarmUID) {
+          push({
+            pathname: 'ring',
+            params: {
+              alarmUID: activeAlarmUID,
+            } as RingScreenRouteParamsType,
+          });
+        } else {
+          await alarmsScreenStore.init();
+          checkActiveAlarmStore.startCheck((uid) =>
+            push({
+              pathname: 'ring',
+              params: {
+                alarmUID: uid,
+              } as RingScreenRouteParamsType,
+            })
+          );
+        }
+      };
+
+      onFocusScreen();
 
       return () => {
         alarmsScreenStore.reset();
@@ -160,7 +190,7 @@ export const Alarms: React.FC = observer(() => {
     }, [])
   );
 
-  if (!fontsLoaded) {
+  if (!uiStore.isFontsLoaded.value) {
     return null;
   }
 

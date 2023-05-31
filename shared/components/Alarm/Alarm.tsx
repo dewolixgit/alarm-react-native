@@ -30,6 +30,7 @@ import {
 type Props = ViewProps & {
   offOption: AlarmOffOptionEnum;
   time: string;
+  repeating: boolean;
   repeatWeekDays: WeekdayEnum[];
   onPressEdit?: VoidFunction;
   switchValue?: boolean;
@@ -40,6 +41,7 @@ const Alarm: React.FC<Props> = ({
   style,
   time,
   offOption,
+  repeating,
   repeatWeekDays,
   onPressEdit,
   switchValue,
@@ -48,23 +50,33 @@ const Alarm: React.FC<Props> = ({
 }) => {
   const { IconComponent, iconName } = alarmOffOptionIcons[offOption];
 
+  const repeatEveryDay = React.useMemo(() => {
+    if (!repeating || repeatWeekDays.length === 0) {
+      return false;
+    }
+
+    return isEveryWeekDay(repeatWeekDays);
+  }, [repeating, repeatWeekDays]);
+
   return (
     <Card style={[blockShadow1, style]} {...props}>
       <Content>
         <AccentContainer>
           <Time>{time}</Time>
         </AccentContainer>
-        {repeatWeekDays.length === 0 ? (
-          <Info>Без повторов</Info>
-        ) : isEveryWeekDay(repeatWeekDays) ? (
-          <Info>Повторяется{'\n'}каждый день</Info>
-        ) : (
+        {!repeating && <Info>Без повторов</Info>}
+
+        {repeating && repeatWeekDays.length !== 0 && !repeatEveryDay && (
           <Info>
             Повторяется:{'\n'}
             {sortWeekdaysFromMonday(repeatWeekDays)
               .map((day) => shortRusWeekDays[day].toLowerCase())
               .join(', ')}
           </Info>
+        )}
+
+        {repeating && repeatEveryDay && (
+          <Info>Повторяется{'\n'}каждый день</Info>
         )}
       </Content>
       <Content>

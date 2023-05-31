@@ -8,7 +8,7 @@ import { FullContainerLoader } from '../../../../shared/components/ui';
 import { AlarmOffOptionEnum } from '../../../../shared/entities/alarm';
 import { COLORS } from '../../../../styles/colors';
 
-import { EmptyMessage, EmptyMessageContainer, StyledList } from './List.styles';
+import { StyledList } from './List.styles';
 import { ListItem } from './components';
 import { DisabledAlarmType } from './types';
 
