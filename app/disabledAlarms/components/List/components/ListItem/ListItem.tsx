@@ -1,11 +1,21 @@
+import { observer } from 'mobx-react-lite';
 import * as React from 'react';
-import { StyleProp, View } from 'react-native';
+import { StyleProp, TouchableOpacity, View } from 'react-native';
 
 import { Heading } from '../../../../../../shared/components/typography';
+import { FullContainerLoader } from '../../../../../../shared/components/ui';
+import { DisabledAlarmType } from '../../../../../../shared/entities/disabledAlarm';
 import { SizeEnum } from '../../../../../../shared/entities/size';
-import { DisabledAlarmType } from '../../types';
+import { useDisabledAlarmsStore } from '../../../../../../store/local/DisabledAlarmsStore';
 
-import { Container, OffOptionText, TextContainer } from './ListItem.styles';
+import {
+  Container,
+  DeleteIcon,
+  DeleteIconContainer,
+  OffOptionText,
+  TextContainer,
+  TimeContainer,
+} from './ListItem.styles';
 import { alarmDisabledText } from './config';
 
 type Props = {
@@ -14,16 +24,45 @@ type Props = {
   isLastInList?: boolean;
 };
 
-export const ListItem: React.FC<Props> = React.memo(
+export const ListItem: React.FC<Props> = observer(
   ({ alarm, style, isLastInList = false }) => {
+    const disabledAlarmsStore = useDisabledAlarmsStore();
+
+    const onClickDelete = React.useCallback(async () => {
+      if (!disabledAlarmsStore) {
+        return;
+      }
+
+      const result = await disabledAlarmsStore.deleteDisabledAlarm(alarm.id);
+
+      if (result) {
+        await disabledAlarmsStore.init();
+      }
+    }, [disabledAlarmsStore, alarm.id]);
+
+    if (!disabledAlarmsStore) {
+      return null;
+    }
+
     return (
       <Container hideBorderBottom={isLastInList} style={style}>
-        <View>
-          <Heading size={SizeEnum.l}>{alarm.timeString}</Heading>
-        </View>
-        <TextContainer>
-          <OffOptionText>{alarmDisabledText[alarm.offOption]}</OffOptionText>
-        </TextContainer>
+        {disabledAlarmsStore.isDeleting.value ? (
+          <FullContainerLoader />
+        ) : (
+          <>
+            <TimeContainer>
+              <Heading size={SizeEnum.l}>{alarm.timeString}</Heading>
+            </TimeContainer>
+            <TextContainer>
+              <OffOptionText>
+                {alarmDisabledText[alarm.offOption]}
+              </OffOptionText>
+            </TextContainer>
+            <DeleteIconContainer onPress={onClickDelete}>
+              <DeleteIcon />
+            </DeleteIconContainer>
+          </>
+        )}
       </Container>
     );
   }

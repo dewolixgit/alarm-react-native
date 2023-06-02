@@ -1,16 +1,20 @@
+import { useFocusEffect } from 'expo-router';
+import { observer, useLocalObservable } from 'mobx-react-lite';
 import * as React from 'react';
-import { ActivityIndicator, FlatList } from 'react-native';
 
+import { Button } from '../../../../shared/components/Button';
 import { CenterScreenMessage } from '../../../../shared/components/CenterScreenMessage';
-import ContentContainer from '../../../../shared/components/ContentContainer';
-import { Heading } from '../../../../shared/components/typography';
 import { FullContainerLoader } from '../../../../shared/components/ui';
 import { AlarmOffOptionEnum } from '../../../../shared/entities/alarm';
-import { COLORS } from '../../../../styles/colors';
+import { DisabledAlarmType } from '../../../../shared/entities/disabledAlarm';
+import { globalDisabledAlarms } from '../../../../store/global/GlobalDisabledAlarms';
+import {
+  DisabledAlarmsStore,
+  DisabledAlarmsStoreContextProvider,
+} from '../../../../store/local/DisabledAlarmsStore';
 
 import { StyledList } from './List.styles';
 import { ListItem } from './components';
-import { DisabledAlarmType } from './types';
 
 const MOCK_LIST: DisabledAlarmType[] = [
   {
@@ -90,32 +94,55 @@ const MOCK_LIST: DisabledAlarmType[] = [
   },
 ];
 
-export const List: React.FC = () => {
-  const disabledAlarms = MOCK_LIST;
-  const loading = false;
+export const List: React.FC = observer(() => {
+  const store = useLocalObservable(() => new DisabledAlarmsStore());
 
-  if (loading) {
+  useFocusEffect(
+    React.useCallback(() => {
+      store.init();
+      return () => {
+        store.reset();
+      };
+    }, [])
+  );
+
+  if (store.isLoading.value) {
     return <FullContainerLoader />;
   }
 
-  if (disabledAlarms.length === 0) {
+  const alarms = store.alarms.value;
+
+  if (!alarms || alarms.length === 0) {
     return (
       <CenterScreenMessage>
         Пока нет сохранённых выключенных будильников
+        <Button
+          title="Добавить"
+          onPress={async () => {
+            await globalDisabledAlarms.handleAddDisabledAlarm({
+              hours: 5,
+              offOption: AlarmOffOptionEnum.shake,
+              minutes: 10,
+            });
+            await store.init();
+          }}
+        />
       </CenterScreenMessage>
     );
   }
 
   return (
-    <StyledList
-      data={MOCK_LIST}
-      renderItem={({ item, index }) => (
-        <ListItem
-          key={item.id}
-          alarm={item}
-          isLastInList={disabledAlarms.length - 1 === index}
-        />
-      )}
-    />
+    <DisabledAlarmsStoreContextProvider value={store}>
+      <StyledList
+        data={alarms.slice().reverse()}
+        renderItem={({ item, index }) => (
+          <ListItem
+            key={item.id}
+            alarm={item}
+            isLastInList={alarms.length - 1 === index}
+          />
+        )}
+      />
+    </DisabledAlarmsStoreContextProvider>
   );
-};
+});

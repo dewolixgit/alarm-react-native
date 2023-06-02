@@ -54,6 +54,21 @@ export const ENDPOINTS: Record<string, EndpointType> = {
     url: `${BASE_API_URL}/auth/register`,
     method: HttpMethodEnum.POST,
   },
+
+  addDisabledAlarms: {
+    url: `${BASE_API_URL}/disabledAlarms/add`,
+    method: HttpMethodEnum.POST,
+  },
+
+  getDisabledAlarms: {
+    url: `${BASE_API_URL}/disabledAlarms/getAll`,
+    method: HttpMethodEnum.GET,
+  },
+
+  deleteDisabledAlarm: {
+    url: `${BASE_API_URL}/disabledAlarms/delete`,
+    method: HttpMethodEnum.POST,
+  },
 };
 
 export const ASYNC_STORAGE_TOKEN_KEY = 'token';

@@ -204,8 +204,6 @@ export const Alarms: React.FC = observer(() => {
         }}
       />
       <Container onLayout={onLayoutRootView}>
-        {/*{isLoading && <FullContainerLoader />}*/}
-
         {alarmsScreenStore.alarms.value.length === 0 && (
           <CenterScreenMessage>
             У вас пока нет сохранённых будильников
@@ -214,7 +212,7 @@ export const Alarms: React.FC = observer(() => {
 
         {alarmsScreenStore.alarms.value.length > 0 && (
           <StyledList
-            data={alarmsScreenStore.alarms.value}
+            data={alarmsScreenStore.alarms.value.slice().reverse()}
             renderItem={({ item }) => (
               <AlarmListItem key={item.uid} alarm={item} />
             )}
