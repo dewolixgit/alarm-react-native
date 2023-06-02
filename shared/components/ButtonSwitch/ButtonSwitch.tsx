@@ -19,6 +19,7 @@ type Props = ViewProps & {
   iconName?: string;
   value?: boolean;
   onChangeValue?: (value: boolean) => void;
+  disabled?: boolean;
 };
 
 const ButtonSwitch: React.FC<Props> = ({
@@ -29,20 +30,22 @@ const ButtonSwitch: React.FC<Props> = ({
   iconName,
   value,
   onChangeValue,
+  disabled = false,
   ...props
 }) => {
   const onPress = React.useCallback(() => {
-    if (value !== undefined && onChangeValue) {
+    if (value !== undefined && onChangeValue && !disabled) {
       onChangeValue(!value);
     }
   }, [onChangeValue, value]);
 
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity onPress={onPress} disabled={disabled}>
       <Container
         size={size}
         style={[blockShadow1, style]}
         active={value}
+        disabled={disabled}
         {...props}
       >
         {text && (

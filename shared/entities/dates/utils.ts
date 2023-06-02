@@ -1,4 +1,9 @@
-import { DAYS_IN_WEEK, WeekdayEnum } from './client';
+import {
+  DAYS_IN_WEEK,
+  enumWeekDayToJSNumberMap,
+  jsWeekDayToEnumMap,
+  WeekdayEnum,
+} from './client';
 
 export const isEveryWeekDay = (weekDays: WeekdayEnum[]): boolean => {
   // For unique days extraction
@@ -22,3 +27,9 @@ export const sortWeekdaysFromMonday = (
 
   return weekDays.slice().sort((day1, day2) => sorter[day1] - sorter[day2]);
 };
+
+export const jsNumberWeekDayToEnum = (n: number): WeekdayEnum =>
+  jsWeekDayToEnumMap[n];
+
+export const enumWeekDayToJSNumber = (e: WeekdayEnum): number =>
+  enumWeekDayToJSNumberMap[e];

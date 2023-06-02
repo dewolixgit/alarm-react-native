@@ -171,11 +171,11 @@ export class ContinuousShakingDetector {
         ContinuousShakingDetectorParamsType,
         'onShake' | 'onComplete' | 'onInterrupt'
       >
-    >
+    > = {}
   ): ContinuousShakingDetector {
     return new ContinuousShakingDetector({
       durationMS: 5000,
-      checkIntervalMs: 750,
+      checkIntervalMs: 1250,
       onShake: params.onShake ?? null,
       onInterrupt: params.onInterrupt ?? null,
       onComplete: params.onComplete ?? null,

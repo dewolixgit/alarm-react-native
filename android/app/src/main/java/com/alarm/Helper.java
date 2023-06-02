@@ -204,7 +204,7 @@ class Helper {
         }
         else
         {
-            pendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), notificationId, intent, 0);
+            pendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         }
 
         return pendingIntent;
