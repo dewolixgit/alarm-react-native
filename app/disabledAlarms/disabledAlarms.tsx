@@ -1,32 +1,16 @@
-import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
+import { observer } from 'mobx-react-lite';
 import * as React from 'react';
-import {
-  TouchableHighlight,
-  TouchableNativeFeedback,
-  TouchableOpacity,
-  View,
-} from 'react-native';
 
-import { Button } from '../../shared/components/Button';
 import ContentContainer from '../../shared/components/ContentContainer';
-import { Typography } from '../../shared/components/typography';
-import { SizeEnum } from '../../shared/entities/size';
-import { FontTypeEnum, FontWeightEnum } from '../../shared/entities/typography';
-import { COLORS } from '../../styles/colors';
+import { userStore } from '../../store/global/UserStore';
 
 import { Message } from './components';
 import { List } from './components/List';
 import { Container, LogoutIcon } from './disabledAlarms.styles';
 
-export const DisabledAlarms: React.FC = () => {
-  const authenticated = true;
-
-  const onPressLogout = React.useCallback(() => {
-    console.log('logout');
-  }, []);
-
-  if (!authenticated) {
+export const DisabledAlarms: React.FC = observer(() => {
+  if (!userStore.isAuthorized) {
     return (
       <ContentContainer>
         <Message />
@@ -38,7 +22,7 @@ export const DisabledAlarms: React.FC = () => {
     <>
       <Tabs.Screen
         options={{
-          headerRight: () => <LogoutIcon onPress={onPressLogout} />,
+          headerRight: () => <LogoutIcon onPress={userStore.logout} />,
         }}
       />
       <Container>
@@ -46,4 +30,4 @@ export const DisabledAlarms: React.FC = () => {
       </Container>
     </>
   );
-};
+});

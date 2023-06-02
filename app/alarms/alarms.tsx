@@ -22,6 +22,7 @@ import Alarm, {
 } from '../../shared/nativeModules/alarmModule/alarmModule';
 import { checkActiveAlarmStore } from '../../store/global/CheckActiveAlarmStore';
 import { uiStore } from '../../store/global/UIStore/UIStore';
+import { userStore } from '../../store/global/UserStore';
 import { AlarmsScreenStore } from '../../store/local/AlarmsScreenStore';
 import FONTS from '../../styles/fonts';
 import disabledAlarms from '../disabledAlarms';
@@ -159,6 +160,7 @@ export const Alarms: React.FC = observer(() => {
     React.useCallback(() => {
       const onFocusScreen = async () => {
         await uiStore.loadFonts();
+        await userStore.init();
 
         const activeAlarmUID = await getAlarmState();
 
