@@ -4,8 +4,10 @@ import * as React from 'react';
 
 import { Button } from '../../../../shared/components/Button';
 import { CenterScreenMessage } from '../../../../shared/components/CenterScreenMessage';
+import { FullContainerLoader } from '../../../../shared/components/ui';
 import { ContinuousShakingDetector } from '../../../../shared/models/ContinuousShakingDetector';
 import AlarmClass from '../../../../shared/nativeModules/alarmModule';
+import { globalDisabledAlarms } from '../../../../store/global/GlobalDisabledAlarms';
 
 import { ButtonWrapper, Container } from './ShakeTask.styles';
 
@@ -20,8 +22,12 @@ export const ShakeTask: React.FC<Props> = observer(({ alarm }) => {
     ContinuousShakingDetector.createDefault()
   );
 
-  const onClickFinish = React.useCallback(() => {
-    // Todo: отправлять на бэк завершение задания
+  const onClickFinish = React.useCallback(async () => {
+    await globalDisabledAlarms.handleAddDisabledAlarm({
+      hours: alarm.hour,
+      minutes: alarm.minutes,
+      offOption: alarm.offOption,
+    });
 
     push({
       pathname: 'alarms',
@@ -38,21 +44,27 @@ export const ShakeTask: React.FC<Props> = observer(({ alarm }) => {
 
   return (
     <Container>
-      <CenterScreenMessage>
-        {!shakingDetector.isCompleted &&
-          !shakingDetector.isShaking &&
-          'Трясите устройство на протяжении пяти секунд'}
+      {globalDisabledAlarms.isAdding.value ? (
+        <FullContainerLoader />
+      ) : (
+        <>
+          <CenterScreenMessage>
+            {!shakingDetector.isCompleted &&
+              !shakingDetector.isShaking &&
+              'Трясите устройство на протяжении пяти секунд'}
 
-        {!shakingDetector.isCompleted &&
-          shakingDetector.isShaking &&
-          'Продолжайте трясти'}
+            {!shakingDetector.isCompleted &&
+              shakingDetector.isShaking &&
+              'Продолжайте трясти'}
 
-        {shakingDetector.isCompleted && 'Вы можете закрыть экран'}
-      </CenterScreenMessage>
-      {shakingDetector.isCompleted && (
-        <ButtonWrapper>
-          <Button title="Завершить" onPress={onClickFinish} />
-        </ButtonWrapper>
+            {shakingDetector.isCompleted && 'Вы можете закрыть экран'}
+          </CenterScreenMessage>
+          {shakingDetector.isCompleted && (
+            <ButtonWrapper>
+              <Button title="Завершить" onPress={onClickFinish} />
+            </ButtonWrapper>
+          )}
+        </>
       )}
     </Container>
   );

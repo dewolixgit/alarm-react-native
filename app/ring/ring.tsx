@@ -7,6 +7,7 @@ import Alarm, {
   getAlarm,
   stopAlarm,
 } from '../../shared/nativeModules/alarmModule';
+import { globalDisabledAlarms } from '../../store/global/GlobalDisabledAlarms';
 
 import { BaseDisabler } from './components/BaseDisabler';
 import { MathTask } from './components/MathTask';
@@ -38,10 +39,16 @@ export const Ring: React.FC = () => {
     await stopAlarm();
 
     if (alarm.offOption === AlarmOffOptionEnum.gesture) {
-      // Todo: отправлять на бэк выключенный будильник
+      await globalDisabledAlarms.handleAddDisabledAlarm({
+        hours: alarm.hour,
+        minutes: alarm.minutes,
+        offOption: alarm.offOption,
+      });
+
       push({
         pathname: 'alarms',
       });
+
       return;
     }
 

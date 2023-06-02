@@ -22,6 +22,7 @@ import Alarm, {
 } from '../../shared/nativeModules/alarmModule/alarmModule';
 import { checkActiveAlarmStore } from '../../store/global/CheckActiveAlarmStore';
 import { uiStore } from '../../store/global/UIStore/UIStore';
+import { userStore } from '../../store/global/UserStore';
 import { AlarmsScreenStore } from '../../store/local/AlarmsScreenStore';
 import FONTS from '../../styles/fonts';
 import disabledAlarms from '../disabledAlarms';
@@ -159,6 +160,7 @@ export const Alarms: React.FC = observer(() => {
     React.useCallback(() => {
       const onFocusScreen = async () => {
         await uiStore.loadFonts();
+        await userStore.init();
 
         const activeAlarmUID = await getAlarmState();
 
@@ -202,8 +204,6 @@ export const Alarms: React.FC = observer(() => {
         }}
       />
       <Container onLayout={onLayoutRootView}>
-        {/*{isLoading && <FullContainerLoader />}*/}
-
         {alarmsScreenStore.alarms.value.length === 0 && (
           <CenterScreenMessage>
             У вас пока нет сохранённых будильников
@@ -212,7 +212,7 @@ export const Alarms: React.FC = observer(() => {
 
         {alarmsScreenStore.alarms.value.length > 0 && (
           <StyledList
-            data={alarmsScreenStore.alarms.value}
+            data={alarmsScreenStore.alarms.value.slice().reverse()}
             renderItem={({ item }) => (
               <AlarmListItem key={item.uid} alarm={item} />
             )}

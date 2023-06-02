@@ -2,12 +2,7 @@ import { useRouter } from 'expo-router';
 import * as React from 'react';
 
 import { Button } from '../../../../shared/components/Button';
-import { Typography } from '../../../../shared/components/typography';
-import { SizeEnum } from '../../../../shared/entities/size';
-import {
-  FontTypeEnum,
-  FontWeightEnum,
-} from '../../../../shared/entities/typography';
+import { AuthRouteParamsType } from '../../../../shared/entities/screens/auth';
 
 import { Container, MessageText } from './Message.styles';
 
@@ -17,6 +12,9 @@ export const Message: React.FC = () => {
   const onPress = React.useCallback(() => {
     push({
       pathname: 'auth',
+      params: {
+        goBackRoute: 'disabledAlarms',
+      } as AuthRouteParamsType,
     });
   }, []);
 

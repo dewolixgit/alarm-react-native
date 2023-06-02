@@ -4,7 +4,9 @@ import * as React from 'react';
 
 import { Button } from '../../../../shared/components/Button';
 import { Input } from '../../../../shared/components/Input';
+import { FullContainerLoader } from '../../../../shared/components/ui';
 import AlarmClass from '../../../../shared/nativeModules/alarmModule';
+import { globalDisabledAlarms } from '../../../../store/global/GlobalDisabledAlarms';
 import { RingMathTaskStore } from '../../../../store/local/RingMathTaskStore';
 
 import {
@@ -26,6 +28,12 @@ export const MathTask: React.FC<Props> = observer(({ alarm }) => {
     const result = await taskStore.finishTask();
 
     if (result) {
+      await globalDisabledAlarms.handleAddDisabledAlarm({
+        hours: alarm.hour,
+        minutes: alarm.minutes,
+        offOption: alarm.offOption,
+      });
+
       push({
         pathname: 'alarms',
       });
@@ -39,18 +47,24 @@ export const MathTask: React.FC<Props> = observer(({ alarm }) => {
 
   return (
     <Container>
-      <CenterContainer>
-        <TaskText>{taskStore.math.terms.value?.join(' + ')}</TaskText>
-        <Input
-          keyboardType="numeric"
-          incorrect={taskStore.invalidAnswer.value}
-          value={taskStore.userAnswer.value}
-          onChangeText={onChangeText}
-        />
-      </CenterContainer>
-      <ButtonWrapper>
-        <Button title="Завершить" onPress={onPressFinish} />
-      </ButtonWrapper>
+      {globalDisabledAlarms.isAdding.value ? (
+        <FullContainerLoader />
+      ) : (
+        <>
+          <CenterContainer>
+            <TaskText>{taskStore.math.terms.value?.join(' + ')}</TaskText>
+            <Input
+              keyboardType="numeric"
+              incorrect={taskStore.invalidAnswer.value}
+              value={taskStore.userAnswer.value}
+              onChangeText={onChangeText}
+            />
+          </CenterContainer>
+          <ButtonWrapper>
+            <Button title="Завершить" onPress={onPressFinish} />
+          </ButtonWrapper>
+        </>
+      )}
     </Container>
   );
 });

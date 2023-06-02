@@ -8,10 +8,11 @@ import { StyledInput } from './AuthForm.styles';
 type Props = {
   onSubmit?: (values: AuthFieldsType) => void;
   toRegister?: boolean;
+  disabled?: boolean;
 };
 
 export const AuthForm: React.FC<Props> = React.memo(
-  ({ onSubmit, toRegister }) => {
+  ({ onSubmit, toRegister, disabled }) => {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
 
@@ -24,15 +25,23 @@ export const AuthForm: React.FC<Props> = React.memo(
 
     return (
       <>
-        <StyledInput label="Email" value={email} onChangeText={setEmail} />
+        <StyledInput
+          label="Email"
+          value={email}
+          onChangeText={setEmail}
+          editable={!disabled}
+        />
         <StyledInput
           label="Password"
           value={password}
           onChangeText={setPassword}
+          editable={!disabled}
+          secureTextEntry
         />
         <Button
           title={toRegister ? 'Зарегистрироваться' : 'Войти'}
           onPress={onPress}
+          disabled={disabled}
         />
       </>
     );
