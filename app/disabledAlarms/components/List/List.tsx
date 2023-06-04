@@ -116,17 +116,6 @@ export const List: React.FC = observer(() => {
     return (
       <CenterScreenMessage>
         Пока нет сохранённых выключенных будильников
-        <Button
-          title="Добавить"
-          onPress={async () => {
-            await globalDisabledAlarms.handleAddDisabledAlarm({
-              hours: 5,
-              offOption: AlarmOffOptionEnum.shake,
-              minutes: 10,
-            });
-            await store.init();
-          }}
-        />
       </CenterScreenMessage>
     );
   }
