@@ -32,7 +32,7 @@ export const AuthForm: React.FC<Props> = React.memo(
           editable={!disabled}
         />
         <StyledInput
-          label="Password"
+          label="Пароль"
           value={password}
           onChangeText={setPassword}
           editable={!disabled}

@@ -42,7 +42,6 @@ export class RingMathTaskStore {
       return false;
     }
 
-    // Todo: отправлять на бэк выключенный будильник
     return true;
   };
 }

@@ -56,14 +56,14 @@ class UserStore {
 
     if (response.clientError) {
       this.authLoading.setValue(false);
-      ToastAndroid.show('Login error', ToastAndroid.SHORT);
+      ToastAndroid.show('Произошла ошибка', ToastAndroid.SHORT);
       return false;
     }
 
     if (response.apiError) {
       this.authLoading.setValue(false);
       ToastAndroid.show(
-        response.apiError.apiMessage ?? 'Login error',
+        response.apiError.apiMessage ?? 'Произошла ошибка',
         ToastAndroid.SHORT
       );
       return false;
@@ -103,14 +103,14 @@ class UserStore {
 
     if (response.clientError) {
       this.authLoading.setValue(false);
-      ToastAndroid.show('Register error', ToastAndroid.SHORT);
+      ToastAndroid.show('Произошла ошибка', ToastAndroid.SHORT);
       return false;
     }
 
     if (response.apiError) {
       this.authLoading.setValue(false);
       ToastAndroid.show(
-        response.apiError.apiMessage ?? 'Register error',
+        response.apiError.apiMessage ?? 'Произошла ошибка',
         ToastAndroid.SHORT
       );
       return false;
@@ -118,7 +118,7 @@ class UserStore {
 
     if (response.data) {
       this.authLoading.setValue(false);
-      ToastAndroid.show('You are registered', ToastAndroid.SHORT);
+      ToastAndroid.show('Регистрация выполнена', ToastAndroid.SHORT);
       return true;
     }
 
