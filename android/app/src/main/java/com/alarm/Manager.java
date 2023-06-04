@@ -47,7 +47,7 @@ public class Manager {
         Storage.saveDates(context, dates);
         if (prevDates == null) return;
         for (Date date : prevDates.getDates()) {
-            Helper.cancelAlarm(context, dates.getNotificationId(date));
+            Helper.cancelAlarm(context, prevDates.getNotificationId(date));
         }
     }
 

@@ -49,7 +49,7 @@ const Layout = () => {
       <Tabs.Screen
         name="alarms/index"
         options={{
-          title: 'Будильники',
+          title: ' Будильники ',
           tabBarIcon: ({ focused }) => (
             <MaterialIcons
               name="access-alarm"

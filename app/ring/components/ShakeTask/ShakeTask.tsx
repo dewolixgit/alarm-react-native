@@ -32,7 +32,7 @@ export const ShakeTask: React.FC<Props> = observer(({ alarm }) => {
     push({
       pathname: 'alarms',
     });
-  }, []);
+  }, [alarm]);
 
   React.useEffect(() => {
     shakingDetector.startDetection();

@@ -25,8 +25,8 @@ export const BaseDisabler: React.FC<Props> = observer(({ onClickDisable }) => {
         <>
           <Time>
             {formatTimeColon({
-              minutes: date.getHours(),
-              hours: date.getMinutes(),
+              minutes: date.getMinutes(),
+              hours: date.getHours(),
             })}
           </Time>
           <Button title="Выключить" onPress={onClickDisable} />

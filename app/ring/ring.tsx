@@ -27,8 +27,9 @@ export const Ring: React.FC = () => {
 
       return () => {
         setAlarm(null);
+        setLocalIsDisabled(false);
       };
-    }, [])
+    }, [alarmUID])
   );
 
   const onClickDisableButton = React.useCallback(async () => {

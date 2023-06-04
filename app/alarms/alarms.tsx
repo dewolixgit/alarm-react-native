@@ -212,7 +212,7 @@ export const Alarms: React.FC = observer(() => {
 
         {alarmsScreenStore.alarms.value.length > 0 && (
           <StyledList
-            data={alarmsScreenStore.alarms.value.slice().reverse()}
+            data={alarmsScreenStore.alarms.value}
             renderItem={({ item }) => (
               <AlarmListItem key={item.uid} alarm={item} />
             )}
